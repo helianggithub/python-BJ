@@ -1,0 +1,74 @@
+python3 创建虚拟环境命令，在终端运行
+
+
+ 一：创建
+learning_log> python3 -m venv ll_env                            #在learning_log文件夹下创建名为ll_env的虚拟环境
+ 
+learning_log> ll_env\Scripts\activate                          #激活虚拟环境win
+
+learning_log> source ll_env/bin/activate                       #激活虚拟环境linux
+
+learning_log> deactivate                                       #关闭虚拟环境								
+
+<ll_env>learning_log> pip3 install Django==1.11                 #在激活的ll_env虚拟环境中安装Django模块1.11版本
+
+<ll_env>learning_log> pip3 install django-bootstrap3           #安装网页样式设置应用程序
+
+<ll_env>learning_log> django-admin.py startproject len .       #创建名为len的项目,末尾的句点让新项目使用合适的目录结构,千万别忘记,否则部署项目
+　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　时会遇到配置问题
+<ll_env>learning_log> python3 manage.py migrate                #创建数据库
+
+<ll_env>learning_log> python3 manage.py runserver              #查看项目,启动服务器
+
+<ll_env>learning_log> python3 manage.py runserver 8001         #更换访问端口
+
+<ll_env>learning_log> python3 manage.py startapp learning_logs  #创建learning_logs文件夹，并在该文件夹内创建应用程序所需的基础文件。
+
+<ll_env>learning_log> python3 manage.py startapp users         #创建users文件夹,该文件用于创建用户账户
+
+
+　二：迁移数据
+<ll_env>learning_log> python3 manage.py makemigrations learning_logs #修改数据库
+
+<ll_env>learning_log> python3 manage.py migrate                #迁移数据
+
+
+　三：创建超级用户
+<ll_env>learning_log> python3 manage.py createsuperuser        #输入用户名，邮箱和密码，邮箱可以为空
+
+
+　四：用django shell查询项目数据，测试项目
+python3 manage.py shell                                        #调出python的shell
+from learning_logs.models import Topic                         #导入Topic类
+Topic.objects.all()                                            #查询用户输入到Topic类的所有项
+
+topics = Topic.objects.all()
+for topic in topics:
+    print(topic.id,topic)                                      #遍历用户的输入项
+
+t = Topic.objects.get(id=1)
+t.text                                                         #获得id为１变量为text的值
+t.date_added                                                   #获得id为１的值的输入时间
+t.entry_set.all()                                              #获得id为１的值的所有外键关联项，entry为模型(类)的名字
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

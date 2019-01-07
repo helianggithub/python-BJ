@@ -1,0 +1,30 @@
+{% extends 'learning_logs/base.html' %}
+
+{% block header %}
+  <h2>{{ topic }}</h2>                                           #header块
+{% endblock header %}
+
+{% block content %}
+  <p>
+    <a href="{% url 'learning_logs:new_entry' topic.id %}">添加新条目</a>
+  </p>
+  {% for entry in entries %}
+    <div class="panel panel-efault">
+      <div class="panel-heading">　　　　　　　　　　　　　　　   #分为不同的div段，设置不同的class
+        <h3>
+         {{ entry.date_added|date:'Y M d H:i' }}
+          <small>                                               #<h3>字体内嵌套更小些的字体
+            <a href="{% url 'learning_logs:edit_entry' entry.id %}">编辑条目</a>
+          </small>
+        </h3>
+      </div>
+      <div class="panel-body">
+        {{ entry.text|linebreaks }}
+      </div>
+    </div> 
+
+  {% empty %}
+      此主题尚无条目
+  {% endfor %}
+
+{% endblock content %}

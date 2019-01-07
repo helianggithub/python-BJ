@@ -1,0 +1,18 @@
+{% extends "learning_logs/base.html" %}
+
+{% load bootstrap3 %}                                     #加载bootstrap3模板
+
+{% block header %}
+  <h2>登录你的账户</h2>                                    #统一风格的header块
+{% endblock header %}
+
+{% block content %}                                      #django-bootstrap3自动管理表单错误
+  <form method="post" action="{% url 'users:login' %}" class="form">
+    {% csrf_token %}                                     #安全检查
+    {% bootstrap_form form %}　　　　　　　　　　　　     #显示表单,bootstrap3模板标签
+    {% buttons %}
+      <button name="submit" class="btn btn-primary">登录</button>   #统一样式显示,统一class
+    {% endbuttons %}
+    <input type="hidden" name="next" value="{% url 'learning_logs:index' %}" />
+  </form>
+{% endblock content %}

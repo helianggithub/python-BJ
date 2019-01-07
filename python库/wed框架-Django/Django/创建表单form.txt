@@ -1,0 +1,20 @@
+
+
+在models.py文件所在文件夹中创建forms.py文件
+
+from django import forms　　　　　　　　　　　　　　　　　　 #导入表单模块
+from .models import Topic,Entry　　　　　　　　　　　　　　  #导入模型
+
+class TopicForm(forms.ModelForm):                          #继承ModelForm类
+	class Meta:                                        #内嵌Meta类，告诉Django用那个模型创建表单
+		model = Topic                              #用导入的Topic模型创建表单。
+		fields = [ 'text' ]                        #包含text字段
+		labels = { 'text':''}　　　　　　　　　　　 #不要为text生成标签
+
+class EntryForm(forms.ModelForm):                          
+	class Meta:
+		model = Entry
+		fields = ['text']                         #功能同上
+		labels = {'text':''}　　　　　　　　　　   
+		widgets = {'text':forms.Textarea(attrs={'cols':80})}  #定制text字段的输入小部件，将文本区的宽度设置为80,而不是默认的40
+

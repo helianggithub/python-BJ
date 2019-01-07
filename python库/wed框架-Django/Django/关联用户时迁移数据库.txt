@@ -1,0 +1,18 @@
+在虚拟环境下注册几个用户后迁移数据库
+
+<ll_env>learning_log>　python3 manage.py shell
+    >>> from django.contrib.auth.models import User       
+    >>> User.objects.all()
+    ...[<User: ll_admin>,<User: eric>,<User: willie>] 
+    >>> for user in User.objects.all():
+    ...     pirnt(user.username,user.id)                        
+    ll_admin 1                                                          #找出用户id
+    eric 2
+    willie 3
+
+<ll_env>learning_log> python3 manage.py makemigrations learning_logs    #迁移learning_logs应用程序的数据库文件
+　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　输入１选择
+　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　再输入用户的id选择(python从入门到实践404页,输入的是1）
+<ll_env>learning_log> python3 manage.py migrate                         #执行迁移 
+      
+

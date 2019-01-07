@@ -1,0 +1,149 @@
+在应用程序文件夹<learning_logs>中创建templates文件,再新建一个<learning_logs>文件，在这个文件夹中创建html
+
+
+父模板,base.html
+<p>
+  <a href="{% url 'learning_logs:index' %}">学习主页</a>  　＃生成《学习主页》标签的url，该url与应用程序中urls.py的name='index'定义的url匹配 
+  <a href="{% url 'learning_logs:topics' %}">主题</a>       ＃生成《主题》标签的url，该url与应用程序中urls.py的name='topics'定义的url匹配
+  {% if user.is_authenticated %}                            #变量is_authenticated用户已登录值为True,未登录值为False,if语句判断打印问候语
+    你好,{{ user.username }}
+    <a href="{% url 'users:logout' %}">注销</a>             #套在if语句内，用户登录后显示                                
+  {% else %}                                              
+    <a href="{% url 'users:register' %}"<注册</a>            #未登录显示链接《注册》
+    <a href="{% url 'users:login' %}">登录</a>              #未登录显示链接《登录》
+  {% endif %}　　　　　　　　　　　　　　　　　　　　　　     #if语句结束
+</p>
+{% block content %}{% endblock content %}　　　　　　　　　　＃content占位符，在子类模板中编辑
+
+
+子模板,index.html
+{% extends "learning_logs/base.html" %}　　　　　　　　　　　＃继承父类模板，位置learning_logs/base.html　　　　　　　　　　　　　　　　　
+{% block content %}                                         #父类模板中占位符，在子模板中开始标志
+  <p>学习笔记主页面</p>　　　　　　　　　　　　　　　　　　　　＃子模板段落
+  <p>需要添加的字段</p>
+{% endblock content %}　　　　　　　　　　　　　　　　　　　　＃占位符结束标志
+
+
+子模板,topics.html
+{% extends "learning_logs/base.html" %}　　　　　　　　　　　#继承
+{% block content %}　　　　　　　　　　　　　　　　　　　     #占位符开始
+  <p>主题</p>
+  <ul>　　　　　　　　　　　　　　　　　　　　　　　　　　　　 #项目列表开始
+    {% for topic in topics %}　　　　　　　　　　　　　　　　 #用for循环context传进来的值
+      <li>　　　　　　　　　　　　　　　　　　　　　　　　　　 #把topic设置为带url的按键，位于<li></li>中的内容循环打印
+        <a href="{% url 'learning_logs:topic' topic.id %}">{{ topic }}</a>　　#双花括号为for循环中的值，循环迭代
+      <li>
+    {% empty %}　　　　　　　　　　　　　　　　　　　　　　　 #如果topics中的值为空是显示<li></li>中的值,相当于else:
+      <li>No topics have been added yet,</li>
+    {% endfor %}                                           #循环结束标志
+  </ul>　　　　　　　　　　　　　　　　　　　　　　　　　　　 #项目列表结束
+{% endblock content %}　　　　　　　　　　　　　　　　　　　 #占位符结束
+
+
+子模板,topic.html
+{% extends 'learning_logs/base.html' %}　　　　　　　　　　#继承
+{% block content %}　　　　　　　　　　　　　　　　         #占位符开始
+
+  <p>Topic: {{ topic }}</p>　　　　　　　　　　　　　　　　 #使用topic变量，由context传入
+  <p>Entries:</p>
+  <ul>
+  {% for entry in entries %}　　　　　　　　　　　　　　　 #遍历entries
+    <li>
+      <p>{{ entry.date_added|date:'M d, Y H:i' }}</p>　　 #解析出时间
+      <p>{{ entry.text|linebreaks }}</p>　　　　　　　　　 #过滤器linebresks将包含换行符的文本转换为浏览器能理解的文本
+    </li>
+  {% empty %}　　　　　　　　　　　　　　　　　　　　　　　 #没有for循环，显示下面文本
+    <li>
+      Ther are no entries for this topic yet.
+    </li>
+  {% endfor %}　　　　　　　　　　　　　　　　　　　　　　  #结束循环标志
+  </ul>
+{% endblock content %}　　　　　　　　　　　　　　　　　   #占位符结束标志
+
+
+子模板,new_topic.html
+{% extends "learning_logs/base.html" %}
+{% block content %}
+  <p>添加新主题:</p>
+  <form action="{% url 'learning_logs:new_topic' %}" method='post'>
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button name="submit">确认添加</button>
+  </form>
+{% endblock content %}
+
+
+子模板，new_entry.html
+{% extends "learning_logs/base.html" %}
+{% block content %}
+  <p><a href="{% url 'learning_logs:topic' topic.id %}">{{ topic }}</a></p>
+  <p>添加新条目:</p>
+  <form action="{% url 'learning_logs:new_entry' topic.id %}" method='post'>
+    {% csrf_token %}
+    {{ form.as_p}}
+    <button name='submit'>确定</button>
+  </form>
+{% endblock content %}
+
+
+编辑新条目子模板,edit_entry.html
+{% extends "learning_logs/base.html" %}
+{% block content %}
+
+  <p><a href="{% url 'learning_logs:topic' topic.id %}">{{ topic }}</a></p>    #带url按键
+  <p>编辑条目:</p>
+
+  <form action="{% url 'learning_logs:edit_entry' entry.id %}" method='post'>　#实参action告诉服务器将表单数据发送到哪里，
+                                                        将表单数据发送到name='edit_entry'的url，最终数据将传给创建视图函数edit_entry()
+    {% csrf_token %}                                                           #安全检查，防止跨站请求伪造攻击
+    {{ form.as_p}}　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　  #显示表单
+    <button name="submit">保存更改</button>　　　　　　　　　　　　　　　　　　　#创建保存表单按钮
+  </form>                                                                     #表单结束标准
+  <a href="{% url 'pizzerias:new_pizzas' %}">添加新披萨种类:</a>               #增加带url的按键
+{% endblock content %}
+
+
+在users中创建templates文件夹，再在里面创建users的文件夹,在里面创建html
+子模板login.html
+{% extends "learning_logs/base.html" %}　　　　　　　　　　　　　　　　　　　　#可以继承其他应用程序的模板
+{% block content %}
+  {% if form.errors %}                                                      #表单属性errors被设置，用户名和密码与数据库里的任何用户名
+  <p>你输入的用户名或密码错误，请重新输入</p>　　　　　　　　　　　　　　　　　　密码都不匹配，打印错误消息。
+  {% endif %}　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　#if语句结束
+  <form method="post" action="{% url 'users:login' %}">　　　　　　　　　   #添加url，以post形式　
+  {% csrf_token %}　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　#安全检查 
+  {{ form.as_p }}                                                          #显示表单
+  <button name="submit">登录</button>                                      #设置按键
+  <input type="hidden" name="next" value="{% url 'learning_logs:index' %}" />  #隐藏的表单元素next，实参value告诉Django在用户成功登录后将其
+  </form>　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　重新定向到什么地方，这里是主页
+{% endblock content %}
+
+子模板register.html
+{% extends "learning_logs/base.html" %}
+{% block content %}
+  <form method="post" action="{% url 'users:register' %}">　　　　　　　   #注册表单post发送地址
+  {% csrf_token %}
+  {{ form.as_p }}　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　#同上
+  <button name="submit">注册</button>
+  <input type="hidden" name="next" value="{% url 'learning_logs:index' %}" />
+  </form>
+{% endblock content %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

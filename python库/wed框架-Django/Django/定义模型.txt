@@ -1,0 +1,81 @@
+
+https://docs.djangoproject.com/en/1.8/ref/models/fields/　            ＃模型字段引用网站
+<ll_env>learning_log> python3 manage.py makemigrations learning_logs  #修改数据库
+<ll_env>learning_log> python3 manage.py migrate                       #迁移数据
+                                                                      #定义新模型后需要迁移和注册
+
+
+　一：创建模型
+在创建程序文件夹打开models.py模块
+
+from django.db import models
+from django.contrib.auth.models import User
+
+# 在这里创建模型
+class Topic(models.Model):　　　　　　　　　　　　　　　　　 ＃继承Ｍodel类,网站显示类名+s(Topics)
+	"""用户学习的主题"""
+	text = models.CharField(max_length=200)            #text属性是一个CharField,由字符和文本组成的数据，需要存储少量文字可以用它(如标题，
+　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　城市等)，max_length设置字段的预留空间，这里设置的是200字节
+	date_add = models.DateTimeField(auto_now_add=True) #记录日期和时间，当用户创建新主题时，这个属性将自动记录当前的日期和时间
+        owner = models.ForeignKey(User)                    #建立User模型的外键
+	def __str__(self):　　　　　　　　　　　　　　　　　 #用来显示标题
+		"""返回模型的字符串表示"""　　　　　　　　　　　　　　　
+		return self.text　
+
+class Entry(models.Model):                                 #定义新模型
+	"""学到的有关某个主题的具体知识"""
+	topic = models.ForeignKey(Topic,on_delete=models.CASCADE)  #创建外键，与Topic类关联的外键，（入门到实践第365页)
+	text = models.TextField()                                  #创建的这个实例无长度限制
+	date_added = models.DateTimeField(auto_now_add=True)　　　 #记录日期和时间，当用户创建新主题时，这个属性将自动记录当前的日期和时间
+	
+	class Meta:
+		verbose_name_plural = '项目'                    #调用Meta类，标题显示《项目》
+		
+	def __str__(self):
+		"""返回模型的字符串表示"""                          #定义新模型后需要迁移和注册
+		return text
+
+
+　二：激活模型
+在项目文件夹中打开settings.py模块
+# Application definition
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    #我的应用程序
+    'learning_logs'　　　　　　　　　　　　　　　　　　　　　#添加应用程序文件夹，里面包含创建的模型
+    'users'
+]
+
+　三：注册模型
+在应用程序文件夹打开admin.py模块
+from django.contrib import admin
+from learning_logs.models import Topic, Entry
+
+# Register your models here.
+# 在这里注册你的模型
+admin.site.register(Topic)　　　　　　　　　　　　　　　　　＃注册模型，向网站添加你的模型
+admin.site.register(Entry)                                 #定义新模型后需要迁移和注册
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

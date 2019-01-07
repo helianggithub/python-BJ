@@ -1,0 +1,35 @@
+
+需要在虚拟环境pip3 install django-bootstrap3
+
+在项目文件夹中打开settings.py模块
+# Application definition
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    #第三方应用程序
+    'bootstrap3'                                           #添加网页样式设置应用程序
+    #我的应用程序
+    'learning_logs'　　　　　　　　　　　　　　　　　　　　　#添加应用程序文件夹，里面包含创建的模型
+    'users'
+]
+
+
+在文件末尾添加
+
+#我的设置
+LOGIN_URL = '/users/login/'                               #login_required装饰器检查到用户未登录，让Django知道去哪查找登录页面。
+                                                           这里是users文件夹urls.py中的login
+# django-bootstrap3的设置
+BOOTSTRAP3 = {
+    'include_jquery':True,                                #让django-bootstrap3包含jQuery
+    }
+
+
+
+
+
+

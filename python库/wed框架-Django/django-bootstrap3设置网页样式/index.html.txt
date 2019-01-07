@@ -1,0 +1,17 @@
+{% extends "learning_logs/base.html" %}
+
+{% block header %}                                   #header段落开始
+  <div class='jumbotron'>
+    <h1>跟踪你的学习</h1>　　　　　　　　　　　　　　　#class设置的样式显示h1字段
+  </div>
+{% endblock header %}                                #header段落结束
+
+{% block content %}                                  #content段落，无class，带url
+  <h2>
+    <a href="{% url 'users:register' %}">注册一个账户</a>制作你自己的学习笔记并列出你正在学习的主题
+  </h2>
+  <h2>
+    学习某个新主题时，把你所学的总结为新的条目         #新段落
+  </h2>
+{% endblock content %}
+

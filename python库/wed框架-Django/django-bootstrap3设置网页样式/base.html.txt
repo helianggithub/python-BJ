@@ -1,0 +1,84 @@
+
+{% load bootstrap3 %}                                                         #加载模板标签
+<!DOCTYPE html>                                                               #声明用什么版本编写html，这里是html5
+<html lang="en">                                                              #声明用英语编写
+  <head>
+    <meta charset="utf-8">　　　　　　　　　　　　　　　　　　　　　　　　　    #声明编码
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">      #正确显示网页需要的信息
+
+    <title>学习笔记主页</title>                                       　　　　#标题，不显示到网页，搜索或网页抓取用
+    
+    {% bootstrap_css %}                                                      #自定义的模板标签，让Django包含所有的Bootstrap样式文件
+    {% bootstrap_javascript %}
+  </haed>
+
+  <body>                                    
+    <!-- 静态导航栏 -->                                                      #注释
+    <nav class="navbar navbar-default navbar-static-top">                   #nav元素,表示页面的导航栏开始,class样式
+      <div class="container">
+
+        <div class="navbar-header">                                         #div元素块,定义文档中的分区或节
+          <button type="button" class="navbar-toggle collapsed" 　　　      #定义按钮，当浏览器窗口太窄时点击按钮显示下拉列表
+            data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          </button>
+        <a class="navbar-brand" href="{% url 'learning_logs:index' %}">学习主页</a>  #在主页最左边显示链接
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">                 #新段落开始
+          <ul class="nav navbar-nav">                                      #ul导航栏开始
+            <li><a href="{% url 'learning_logs:topics' %}">主题</a></li>   #每个链接都是一个<li>列表，可以插入多条
+          </ul>
+
+          <ul class="nav navbar-nav navbar-right">                         #右边导航栏开始,navbar-right
+            {% if user.is_authenticated %}                                 #if
+              <li><a>你好,{{ user.username }}.</a></li>
+              <li><a href="{% url 'users:logout' %}">注销</a></li>
+            {% else %}
+              <li><a href="{% url 'users:register' %}">注册</a></li>
+              <li><a href="{% url 'users:login' %}">登录</a></li>
+            {% endif %}
+          </ul>                                                           #if结束，段落结束，导航结束
+        </div>
+      </div>
+    </nav>
+    
+    <div class="container">
+      <div class="page-header">
+        {% block header %}{% endblock header %}                         #定义子类模板中使用的块，带class
+      </div>
+      <div>
+        {% block content %}{% endblock content %}                       #子模板中使用的块，不带class
+      </div>
+    </div> 
+  </body>                                                               #闭合
+</html>      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
